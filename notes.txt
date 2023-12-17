@@ -1,4 +1,0 @@
-Name: CopyCat Plagiarism Checker
-Subtext: A plagiarism checking application designed to safeguard the integrity of your written content. Have confidence in your writings being unique.
-
-Placeholder text: Enter some text or upload a file, and click Scan

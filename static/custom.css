@@ -1,0 +1,15 @@
+@media screen and (max-width: 768px) {
+  .custom-buttons {
+    flex-direction: column !important;
+    margin-bottom: 0rem !important;
+  }
+
+  .custom-buttons button {
+    margin: 0 0 1rem 0 !important;
+  }
+
+  .custom-buttons button,
+  .custom-buttons svg {
+    width: 100%;
+  }
+}
