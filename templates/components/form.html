@@ -1,13 +1,14 @@
 {% block input %}
-  <div class="box column is-full is-full-mobile">
+  <div class="custom-form-container box column is-full is-full-mobile is-clipped">
     <form class="is-fullwidth">
         <textarea autofocus class="textarea has-fixed-size" type="text" placeholder="Enter some text or upload a file, and click Begin Scan" rows="12" style="border: none; box-shadow: none"></textarea>
         <div class="custom-buttons container is-flex is-align-items-center">
           <button class="button is-primary mr-2">Begin Scan</button>
           {% with icon = 'upload' %}
-            {% include 'icons.html' %}
+            {% include './components/icons.html' %}
           {% endwith %}
         </div>
       </form>
+      {% include './components/form-success.html' %}
   </div>
 {% endblock %}

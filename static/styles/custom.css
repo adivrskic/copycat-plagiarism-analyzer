@@ -1,3 +1,15 @@
+.custom-form-container {
+  position: relative;
+}
+
+.custom-results {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 0.75rem;
+}
+
 @media screen and (max-width: 768px) {
   .custom-buttons {
     flex-direction: column !important;
