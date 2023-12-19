@@ -2,19 +2,18 @@
   position: relative;
 }
 
-.custom-results {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: 0.75rem;
-}
-
 .custom-file-upload > input {
   display: none;
 }
 
-.custom-form-error {
+.custom-file-upload > label {
+  height: 24px;
+  display: flex;
+}
+
+.custom-form-error,
+.custom-form-loading,
+.custom-form-server-error {
   display: none !important;
   position: absolute;
   top: 0;
@@ -24,14 +23,64 @@
   height: 100%;
 }
 
-.custom-form-error.visible {
+.custom-form-error.visible,
+.custom-form-server-error.visible,
+.custom-form-loading.visible,
+.notification.visible {
   display: flex !important;
 }
 
-.custom-form-error .close-icon {
+.custom-form-error .close-icon,
+.custom-form-server-error .close-icon {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
+}
+
+.custom-notification {
+  width: calc(100% - 2.25rem);
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  display: none;
+}
+
+.progress {
+  animation-duration: 0.75s !important;
+  width: 200px !important;
+}
+
+.custom-results {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 0.75rem;
+  transition: width 0.67s ease-in-out;
+}
+
+.custom-results-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.custom-result {
+  position: relative;
+}
+
+.custom-result-percentage {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+}
+
+.custom-results * {
+  /* opacity: 0; */
+}
+
+.custom-results.has-results {
+  width: 70%;
 }
 
 @media screen and (max-width: 768px) {

@@ -3,12 +3,15 @@
     <form id="form" class="is-fullwidth" method="POST" enctype="multipart/form-data">
         <textarea autofocus class="textarea has-fixed-size" type="text" placeholder="Enter some text or upload a file, and click Begin Scan" rows="12" style="border: none; box-shadow: none"></textarea>
         <div class="custom-buttons container is-flex is-align-items-center">
-          <button class="button is-primary mr-2">Begin Scan</button>
+          <button class="scan button is-primary mr-2" type="button">Begin Scan</button>
           
           {% include './components/upload.html' %}
         </div>
       </form>
       {% include './components/form-success.html' %}
       {% include './components/form-error.html' %}
+      {% include './components/form-server-error.html' %}
+      {% include './components/form-loading.html' %}
+      {% include './components/notification.html' %}
   </div>
 {% endblock %}

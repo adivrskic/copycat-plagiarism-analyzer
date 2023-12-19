@@ -1,0 +1,11 @@
+<div class="custom-form-server-error is-flex is-flex-direction-column is-justify-content-center is-align-items-center column">
+  <h3 class="is-size-4 has-text-weight-bold has-text-centered pb-2">Server Error</h3>
+  <p class="has-text-centered pb-6">Sorry, please try again in a few minutes.</p>
+  {% include './components/upload.html' %}
+
+  {% with icon = 'close' %}
+    <div class="custom-form-error-close">
+      {% include './components/icons.html' %}
+    </div>
+  {% endwith %}
+</div>
