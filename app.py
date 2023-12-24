@@ -2,15 +2,12 @@ from flask import Flask, render_template, request, Response
 import pypandoc
 import os
 import re
-from random import sample, choices
+from random import sample
 import json
 import requests
 from bs4 import BeautifulSoup
-from bs4.element import Comment
-import sklearn
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import math
 
 app = Flask(__name__)
 
@@ -25,18 +22,24 @@ def upload():
     file = request.files.get('file')
     _, file_extension = os.path.splitext(file.filename)
     
+    print(file, file_extension)
+    
     if(is_valid_file(file_extension)):
         lines = convert_to_txt(file)
+        print(lines)
         return ' '.join(map(str, lines)), 200
     else:
         return 'Invalid file type', 400
     
 @app.route("/scan", methods=["POST"])
 def scan():
-    selected_phrases = extract_phrases()
+    return 'True', 200
+    scan_type = request.get_data().decode('utf-8')
+    print(scan_type)
+    selected_phrases = extract_phrases(scan_type)
+    res = {'aggregateSimilarity': 0, 'results': []}
+    agg_similarity_overall = 0
     
-    res = []
-    return 'Nice', 200
     # Make a Google search with each phrase
     for phrase in selected_phrases:
         url = 'https://google.com/search?start=0&q=' + phrase.strip()
@@ -45,13 +48,14 @@ def scan():
         soup = BeautifulSoup(response.content, 'html.parser')
         links = soup.findAll("a")
         
-        agg_similarity = 0
+        agg_similarity_link = 0
         highest_similarity = 0
         highest_similarity_link = ''
         counter = 0
-        
-        print(phrase)
-        
+        counter_end = 6
+        if(scan_type == 'deep'):
+            counter_end = 12
+                
         for link in links:
             link_href = link.get('href')
             if "url?q=" in link_href and not "webcache" in link_href and counter < 5:
@@ -72,13 +76,17 @@ def scan():
                     highest_similarity = similarity[0][1]
                     highest_similarity_link = link
                 
-                agg_similarity += similarity[0][1]
+                agg_similarity_link += similarity[0][1]
             
-        res.append({
-            'similarity': float(agg_similarity / 5),
+        agg_similarity_overall += float(agg_similarity_link / 5)
+        print(agg_similarity_overall)
+        res['results'].append({
+            'similarity': float(agg_similarity_link / 5),
             'link': str(highest_similarity_link),
             'phrase': phrase,
-        })                
+        })    
+        
+    res['aggregateSimilarity'] = float(agg_similarity_overall / 5)          
 
     
     if(len(res) == 0):
@@ -101,7 +109,10 @@ def convert_to_txt(file):
             lines.append(line)
     return lines
 
-def extract_phrases(num=5):
+def extract_phrases(scan_type):
+    num = 6
+    if(scan_type == 'deep'):
+        num = 12
     phrases = []
     for i in range(num):
         with open('output.txt'.format(i)) as f:

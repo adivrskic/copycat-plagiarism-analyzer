@@ -1,11 +1,9 @@
-<div class="custom-form-error is-flex is-flex-direction-column is-justify-content-center is-align-items-center column">
+<div class="custom-form-error column is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
   <h3 class="is-size-4 has-text-weight-bold has-text-centered pb-2">Unsupported file type</h3>
   <p class="has-text-centered pb-6">Supported file types: <span class="has-text-weight-bold">.doc, .docx, .odt, .txt</span></p>
   {% include './components/upload.html' %}
 
   {% with icon = 'close' %}
-    <div class="custom-form-error-close">
-      {% include './components/icons.html' %}
-    </div>
+    {% include './components/icons.html' %}
   {% endwith %}
 </div>
