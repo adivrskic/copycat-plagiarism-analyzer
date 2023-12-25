@@ -21,21 +21,16 @@ def start():
 def upload():
     file = request.files.get('file')
     _, file_extension = os.path.splitext(file.filename)
-    
-    print(file, file_extension)
-    
+        
     if(is_valid_file(file_extension)):
         lines = convert_to_txt(file)
-        print(lines)
         return ' '.join(map(str, lines)), 200
     else:
         return 'Invalid file type', 400
     
 @app.route("/scan", methods=["POST"])
 def scan():
-    return 'True', 200
     scan_type = request.get_data().decode('utf-8')
-    print(scan_type)
     selected_phrases = extract_phrases(scan_type)
     res = {'aggregateSimilarity': 0, 'results': []}
     agg_similarity_overall = 0
@@ -53,13 +48,16 @@ def scan():
         highest_similarity_link = ''
         counter = 0
         counter_end = 6
+        divisor = 1
+        
         if(scan_type == 'deep'):
             counter_end = 12
                 
         for link in links:
             link_href = link.get('href')
-            if "url?q=" in link_href and not "webcache" in link_href and counter < 5:
+            if "url?q=" in link_href and not "webcache" in link_href and counter < counter_end:
                 counter+=1
+                divisor+=1
                 response = requests.get(url)
                 soup = BeautifulSoup(response.content, 'html.parser')
                 body = soup.find('body')
@@ -74,22 +72,21 @@ def scan():
                 
                 if(similarity[0][1] > highest_similarity):
                     highest_similarity = similarity[0][1]
-                    highest_similarity_link = link
+                    highest_similarity_link = link_href.split('url?q=')[1]
                 
                 agg_similarity_link += similarity[0][1]
             
-        agg_similarity_overall += float(agg_similarity_link / 5)
-        print(agg_similarity_overall)
+        agg_similarity_overall += float(agg_similarity_link / divisor)
         res['results'].append({
-            'similarity': float(agg_similarity_link / 5),
+            'similarity': float(agg_similarity_link / divisor),
             'link': str(highest_similarity_link),
             'phrase': phrase,
         })    
         
-    res['aggregateSimilarity'] = float(agg_similarity_overall / 5)          
+    res['aggregateSimilarity'] = float(agg_similarity_overall / len(res['results']))          
 
     
-    if(len(res) == 0):
+    if(len(res['results']) == 0 or res['aggregateSimilarity'] == 0):
         return 'Empty Result', 500
     
     return json.dumps(res), 200
@@ -106,6 +103,7 @@ def convert_to_txt(file):
     lines=[]
     with open('output.txt', encoding="utf8") as fp:  
         for line in fp.readlines():
+            print(line)
             lines.append(line)
     return lines
 

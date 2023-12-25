@@ -79,8 +79,9 @@ $(function() {
           $('.custom-form-error').removeClass('visible');
           $('.custom-form-loading').removeClass('visible');
           $('.custom-form-success').addClass('has-results');
-          // appendResults(JSON.parse(data));
-          appendResults(obj);
+          console.log(JSON.parse(data));
+          appendResults(JSON.parse(data));
+          // appendResults(obj);
         },
         error: function(err) {
           if(err.status === 500) {
@@ -96,7 +97,7 @@ $(function() {
     $('.proceed-notification').addClass('visible');
   })
 
-  $('.custom-form-error .close-icon').on('click', function() {
+  $('.custom-form-error .close-icon, .custom-form-server-error .close-icon').on('click', function() {
     $('.custom-form-error').removeClass('visible');
     $('.custom-form-server-error').removeClass('visible');
   });
@@ -118,7 +119,7 @@ $(function() {
     $('.custom-form-success-details-container').addClass('details-visible');
   })
 
-  $('.custom-form-success-details-container .close-icon').on('click', function() {
+  $('.custom-form-success-details .close-icon').on('click', function() {
     $('.custom-container').removeClass('details-visible');
     $('.custom-form-success').removeClass('details-visible');
     $('.custom-form-success-details').removeClass('details-visible');
@@ -158,8 +159,8 @@ $(function() {
       $('.custom-form-success-details-container').append(`
       <div class="box is-flex is-flex-direction-column is-justify-content-space-between">
         <div class="percentage">Similarity: ${Math.round(item.similarity * 100)}%</div>
-        <h4 class="has-text-weight-bold">${item.phrase}</h4>
-        ${item.link}
+        <h4 class="has-text-weight-bold">"${item.phrase}"</h4>
+        <a href="${item.link}">Found Here</a>
       </div>
     `)})
   }
