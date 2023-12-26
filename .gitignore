@@ -1,2 +1,2 @@
-__pychache/
-venv/
+__pychache__/
+.venv/
