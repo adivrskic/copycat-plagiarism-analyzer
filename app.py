@@ -32,10 +32,10 @@ def upload():
 def scan():
     scan_type = request.get_data().decode('utf-8')
     selected_phrases = extract_phrases(scan_type)
+    
     res = {'aggregateSimilarity': 0, 'results': []}
     agg_similarity_overall = 0
     
-    # Make a Google search with each phrase
     for phrase in selected_phrases:
         url = 'https://google.com/search?start=0&q=' + phrase.strip()
         
@@ -49,13 +49,13 @@ def scan():
         counter = 0
         counter_end = 6
         divisor = 1
-        
+                
         if(scan_type == 'deep'):
-            counter_end = 12
+            counter_end = 10
                 
         for link in links:
             link_href = link.get('href')
-            if "url?q=" in link_href and not "webcache" in link_href and counter < counter_end:
+            if "url?q=" in link_href and not "webcache" in link_href and not "maps" in link_href and not 'support.google.com' in link_href and not 'search' in link_href and counter < counter_end:
                 counter+=1
                 divisor+=1
                 response = requests.get(url)
@@ -72,20 +72,20 @@ def scan():
                 
                 if(similarity[0][1] > highest_similarity):
                     highest_similarity = similarity[0][1]
-                    highest_similarity_link = link_href.split('url?q=')[1]
+                    highest_similarity_link = link_href.split('url?q=')[1].split('&sa=')[0]
                 
                 agg_similarity_link += similarity[0][1]
             
         agg_similarity_overall += float(agg_similarity_link / divisor)
+                
         res['results'].append({
             'similarity': float(agg_similarity_link / divisor),
             'link': str(highest_similarity_link),
-            'phrase': phrase,
-        })    
+            'phrase': phrase.strip(),
+        })   
         
     res['aggregateSimilarity'] = float(agg_similarity_overall / len(res['results']))          
 
-    
     if(len(res['results']) == 0 or res['aggregateSimilarity'] == 0):
         return 'Empty Result', 500
     
@@ -103,17 +103,17 @@ def convert_to_txt(file):
     lines=[]
     with open('output.txt', encoding="utf8") as fp:  
         for line in fp.readlines():
-            print(line)
             lines.append(line)
     return lines
 
 def extract_phrases(scan_type):
     num = 6
     if(scan_type == 'deep'):
-        num = 12
+        num = 10
     phrases = []
     for i in range(num):
-        with open('output.txt'.format(i)) as f:
-            phrases += (re.findall(r".*?[\.\!\?]+", f.read()))
-
+        with open('output.txt'.strip().format(i)) as f:
+            regex = "(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s"
+            phrases = re.split(regex, f.read())
+            
     return set(sample(phrases, k=num))
