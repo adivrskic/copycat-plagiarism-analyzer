@@ -58,7 +58,7 @@ $(function() {
   });
 
   $('.scan, .proceed').on('click', function(e) {
-    if($('.textarea').val().length < 100) {
+    if($('.textarea').val().length < 250) {
       $('.error-notification').addClass('visible');
       $('.proceed-notification').removeClass('visible');
     } else {
@@ -68,7 +68,16 @@ $(function() {
         type: 'POST',
         url: '/scan',
         contentType: false,
-        data: $(e.target).hasClass('scan') ? 'regular' : 'deep',
+        data: JSON.stringify({
+          val: $('.textarea').val(),
+          type: $(e.target).hasClass('scan') ? 'regular' : 'deep'
+        }),
+        headers: { 
+          'Accept': 'application/json',
+          'Content-Type': 'application/json' 
+        },
+        contentType: 'application/json; charset=UTF-8',
+        dataType: 'json',
         cache: false,
         processData: false,
         beforeSend: function() {
@@ -79,9 +88,7 @@ $(function() {
           $('.custom-form-error').removeClass('visible');
           $('.custom-form-loading').removeClass('visible');
           $('.custom-form-success').addClass('has-results');
-          console.log(JSON.parse(data));
-          appendResults(JSON.parse(data));
-          // appendResults(obj);
+          appendResults(data);
         },
         error: function(err) {
           if(err.status === 500) {

@@ -30,11 +30,14 @@ def upload():
     
 @app.route("/scan", methods=["POST"])
 def scan():
-    scan_type = request.get_data().decode('utf-8')
-    selected_phrases = extract_phrases(scan_type)
+    data = request.get_json()
+    selected_phrases = extract_phrases(data['val'], data['type'])
     
     res = {'aggregateSimilarity': 0, 'results': []}
     agg_similarity_overall = 0
+    
+    for phrase in selected_phrases:
+        print(phrase)
     
     for phrase in selected_phrases:
         url = 'https://google.com/search?start=0&q=' + phrase.strip()
@@ -50,7 +53,7 @@ def scan():
         counter_end = 6
         divisor = 1
                 
-        if(scan_type == 'deep'):
+        if(data['type'] == 'deep'):
             counter_end = 10
                 
         for link in links:
@@ -106,14 +109,15 @@ def convert_to_txt(file):
             lines.append(line)
     return lines
 
-def extract_phrases(scan_type):
+def extract_phrases(val, type):
     num = 6
-    if(scan_type == 'deep'):
+    if(type == 'deep'):
         num = 10
     phrases = []
     for i in range(num):
         with open('output.txt'.strip().format(i)) as f:
             regex = "(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s"
-            phrases = re.split(regex, f.read())
+            phrases = re.split(regex, val)
             
+    print(set(sample(phrases, k=num)))
     return set(sample(phrases, k=num))
