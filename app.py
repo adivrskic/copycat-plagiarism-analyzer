@@ -119,5 +119,4 @@ def extract_phrases(val, type):
             regex = "(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s"
             phrases = re.split(regex, val)
             
-    print(set(sample(phrases, k=num)))
     return set(sample(phrases, k=num))
